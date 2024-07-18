@@ -1,0 +1,76 @@
+[build-system]
+requires = ["setuptools"]
+
+
+[project]
+name = "spm"
+version = "0.0.1"
+description = "Self-Proving Models"
+authors = [
+     {name = "Orr Paradise", email = "orrp@eecs.berkeley.edu"},
+]
+dynamic = ["readme"]
+dependencies = [
+    "numpy<2", # 2.0 breaks (torch?)
+    "torch",
+    "jupyter",
+    "pandas",
+    "pandas-stubs",
+    "tqdm",
+    "wandb",
+    "emoji",
+    "bidict",
+    'nomkl ; platform_system == "Darwin"',
+    "matplotlib", # For figs
+]
+
+[tool.setuptools]
+packages = ["spm"]
+
+[tool.setuptools.dynamic]
+readme = {file=["README.md"], content-type="text/markdown"}
+
+[project.optional-dependencies]
+dev = [
+    "black",         # Code formatting
+    "flake8",        # Linting
+    "flake8-pyproject",
+    "pep8-naming",
+    "isort",        # Import sorting
+    "mypy",          # Type checking
+    "pytest",        # Testing
+    "pytest-timeout",
+    'gitpython', # for logging git sha to wandb manually.
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 120
+target-version = ['py312']
+include = '\.pyi?$'
+exclude = ''
+
+[tool.isort]
+profile = "black"
+known_first_party = ["spm"]
+known_third_party = ["torch"]
+
+[tool.mypy]
+files = ["spm"]
+python_version = 3.12
+warn_return_any = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unused_configs = true
+check_untyped_defs = true
+
+[tool.flake8]
+ignore = [
+    "E203",
+    "N806",
+    "N812",
+    "W503"
+]
+max-line-length = 120
