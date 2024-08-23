@@ -91,16 +91,17 @@ class RLVFTrainer(Trainer):
 
     def __init__(self, cfg):
         super().__init__(cfg)
-        # Get the string that follows TL and precedes the _ to determine the sampler
-        data_type = cfg.data.split("TL")[1].split("_")[0]
         lu_sampler = LogUniformGCDSampler(UBOUND, base=self.meta.base)
-        if data_type == "":  # It was TL
+        # Get the string that follows TL and precedes the _ to determine the sampler
+        if cfg.data[:2] == "TL":
             logging.info("Using TranscriptSampler")
             self.sampler = TranscriptSampler(lu_sampler)
-        else:
-            annot_len = int(data_type[len("Plus") :])
-            logging.info(f"Using AnnotatedTranscriptSampler with annot_len={data_type}")
+        elif cfg.data[:3] == "ATL":
+            annot_len = int(cfg.data[3])
+            logging.info(f"Using AnnotatedTranscriptSampler with annot_len={annot_len}")
             self.sampler = AnnotatedTranscriptSampler(lu_sampler, annot_len=annot_len)
+        else:
+            raise ValueError(f"Data {cfg.data} not supported for RLVF.")
         self.sampler = UpperBoundRejector(self.sampler, REJECTOR_UBOUND)  # type: ignore
 
     def run(self):
