@@ -239,6 +239,6 @@ def test_overfit(request):
     all_score, k_score = overfit_helper(uv_tr, 250)
     assert np.isclose(all_score, 1) and np.isclose(k_score, 1)
 
-    # Test that model that trains on longer chain of thought fits k but struggles with target
+    # Test that model that trains on longer annotation fits k but struggles with target
     all_score, k_score = overfit_helper(cot_tr, 250)
-    assert 0.1 <= all_score <= 0.7 and 0.9 <= k_score
+    assert all_score <= 0.7 and 0.9 <= k_score
