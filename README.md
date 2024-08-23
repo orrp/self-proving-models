@@ -26,7 +26,7 @@ git clone https://github.com/orrp/self-proving-models.git
 ```
 3. Install the package:
 ```bash
-cd self-proving-models/spm
+cd self-proving-models
 pip install -e .
 ```
 
