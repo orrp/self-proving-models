@@ -171,4 +171,3 @@ deployed from a local machine (not via git).
 - `model.py`: Defines the GPT model architecture. An object-oriented adaptation of [nanoGPT](https://www.github.com/karpathy/nanoGPT).
 - `trainer.py`: Trainer for GPT models. Handles training, evaluation, and logging.
 - `config.py`: Config for a trainer.
-- `rlvf_trainer.py`: Specialized trainer for RLVF models. (Work in progress)

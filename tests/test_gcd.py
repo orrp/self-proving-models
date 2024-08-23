@@ -14,7 +14,6 @@ from spm.data.tensor_repr import TensorRepr, DTYPE
 from spm.data.tensor_repr import  TargetComponent as TC
 from spm.gpt.config import TrainerConfig
 from spm.gpt.trainer import evaluate, Trainer
-from spm.gpt.rlvf_trainer import make_rlvf_batch
 from spm.systematic_models import GroundTruth, ErrsOnEvenGCD
 
 DEVICE = "cpu" if not torch.cuda.is_available() else "cuda"
@@ -131,38 +130,6 @@ def test_evaluate(hardcoded_samples, request):
     assert np.isclose(total_all_score, 1 - frac_target_errs), np.isclose(
         total_k_score, 1 - frac_k_errs
     )
-
-
-def test_make_rlvf_batch(hardcoded_samples, request):
-    """Test make_rlvf_batch function."""
-    name = request.node.name
-    samples = hardcoded_samples
-    enc_samples = EncodedSamples(samples, 10)
-    tr = TensorRepr.from_samples(enc_samples, enc_samples, name)
-    # Check that the ground truth model has perfect scores
-    ground_truth = GroundTruth(tr)
-    accepted_samples = make_rlvf_batch(enc_samples, ground_truth,
-                                       device="cpu",  # because we are just manually looking at the tensors
-                                       temp=1, block_size=tr.m.block_size, acceptance_mask=TC.TRANSCRIPT)
-    assert accepted_samples[0].shape[0] == accepted_samples[1].shape[0] == len(samples)
-    for x, y in zip(accepted_samples[0], accepted_samples[1]):
-        (a, b), (k, u, v) = tr.x_y_to_ints(x.numpy().astype(DTYPE), y.numpy().astype(DTYPE))
-        # find the corresponding sample in samples (the order may have changed due to batching)
-        i = np.where((samples.a == a) & (samples.b == b))[0][0]
-        assert i is not None
-        assert (a, b, k, u, v) == (samples.a[i], samples.b[i], samples.k[i], samples.u[i], samples.v[i])
-    # Check that the errs_on_even_gcd model has perfect scores
-    errs_on_even_gcd = ErrsOnEvenGCD(tr)
-    frac_target_errs = sum(
-        a % 2 == 0 or b % 2 == 0
-        for a, b in zip(samples.a, samples.b)
-    ) / len(samples)
-    accepted_samples = make_rlvf_batch(enc_samples, errs_on_even_gcd,
-                                       device="cpu",  # because we are just manually looking at the tensors
-                                       temp=1, block_size=tr.m.block_size,
-                                       acceptance_mask=TC.TRANSCRIPT)
-    assert accepted_samples[0].shape[0] == accepted_samples[1].shape[0]
-    assert np.isclose(accepted_samples[0].shape[0] / len(samples), 1 - frac_target_errs)
 
 
 def overfit_helper(tr, epochs):

@@ -5,7 +5,6 @@ import wandb
 
 from spm import WANDB_DIR
 from spm.gpt.config import DEFAULTS, MODELS, TrainerConfig
-from spm.gpt.rlvf_trainer import RLVFTrainer, TargetComponent
 from spm.gpt.trainer import Trainer
 
 
@@ -15,7 +14,7 @@ def main(config_args, wandb_args):
     # configure wandb
     wandb_mode = "online" if wandb_args["wandb"] else "disabled"
     wandb.init(project=wandb_args["wandb_proj"], mode=wandb_mode, dir=WANDB_DIR, name=cfg.to_run_name())
-    trainer = Trainer(cfg) if config_args["rlvf"] is None else RLVFTrainer(cfg)
+    trainer = Trainer(cfg)
     trainer.run()
 
 
@@ -28,13 +27,6 @@ def set_defaults(group: ArgumentGroup):
 def make_parser() -> tuple[argparse.ArgumentParser, ArgumentGroup, ArgumentGroup]:
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     config_group = parser.add_argument_group("TrainerConfig")
-    config_group.add_argument(
-        "--rlvf",
-        type=str,
-        help="Run RLVF on transcripts, annotated transcripts, or None for TL.",
-        choices=TargetComponent.possible_values(),
-        default=None,
-    )
     # parse args for TrainerConfig
     config_group.add_argument("--load_ckpt", type=str, help="Load model from checkpoint (name)")
     config_group.add_argument("--device", type=str, required=True)
