@@ -34,7 +34,7 @@ pip install -e .
 You can download pre-generated [![Data](https://img.shields.io/badge/Data-blue.svg)](https://zenodo.org/records/12751514), and extract it to the `data/` directory.
 To generate this data yourself, run
 ```bash
-python self-proving-models/data/generate_data.py
+python spm/data/generate_data.py
 ```
 
 This populates the `data/` directory with Transcripts and Annotated Transcripts
@@ -49,13 +49,13 @@ For Annotated Transcripts, `TL` is replaced with `ATL{ANNOTATION_LENGTH}`.
 ## Training
 Once `data/` is populated, you can train a Self-Proving GPT via Transcript Learning:
 ```bash
-python self-proving-models/train.py --data DATASET_NAME
+python spm/train.py --data DATASET_NAME
 ```
 where `DATASET_NAME` is the name of the dataset you want to use.
 ### Example
 To train on about 10 million samples with an upper bound of 10,000 encoded in base 210:
 ```bash
-python self-proving-models/train.py --data TL_1e4_m1e7_b210
+python spm/train.py --data TL_1e4_m1e7_b210
 ```
 ### Useful arguments
 - `--help`: Show all arguments.
@@ -92,7 +92,7 @@ determines Verifiability of the model. This ablation requires generating many di
 For convenience, there is a script that first samples a random base with a given number of unique primes in its
 factorization, then trains a model and deletes the dataset.
 ```bash
-./self-proving-models/train_diff_bases.py --num_unique_primes NUM_UNIQUE_PRIMES --seed SEED
+python spm/train_diff_bases.py --num_unique_primes NUM_UNIQUE_PRIMES --seed SEED
 ```
 
 Run this script for twenty seeds. *Tip: You can use a [WandB sweep](https://docs.wandb.ai/guides/sweeps)
