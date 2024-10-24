@@ -86,6 +86,21 @@ Logs of these runs will be saved at `logs/`. The Figure 2 can be generated with
 ./figs/annotation.py        # Fig 2
 ```
 
+### Reinforcement Learning from Verifier Feedback
+Notice that in the [above ablation](#Annotation length), T=0 corresponds to GPT+TL and T=7 corresponds to GPT+Annotated TL in Table 2 of the paper.
+
+To obtain the third row, first train a mode with TL for 10k iterations:
+ ```bash
+ train.py --device=cuda --dropout=0 --eval_batch_size=512 --warmup_iters=0 --epochs=1 --beta1=0.733 --learning_rate=0.0007 --batch_size=1024 --decay_lr=10 --grad_clip=2 --n_embd=256 --n_head=8 --n_layer=8 --seed=0 --data=TL_1e4_m1e7_b210 --eval_interval=10000 --log_interval=500 --save_iters 10000
+ ```
+
+You now have a low-verifiability base model. Tune it with RLVF with the following hyperparameters:
+```bash
+python spm/train.py --rlvf=annotated --load_ckpt=8x8x256-TL_1e4_m1e7_b210_iter10000 --batch_size=2048 --beta1=0.7080340973835836 --decay_lr=10 --device=cuda --epochs=1000 --eval_batch_size=1024 --eval_interval=10 --grad_clip=0 --learning_rate=0.00012878882950276307  --log_interval=1 --n_embd=256 --n_head=8 --n_layer=8 --seed=0 --temperature=1.6097135118487995 --warmup_iters=0
+```
+
+Note that in the above, `--rlvf=annotated` indicates that a transcript should be considered "accepted" only when the entire annotated transcript was generated correctly. However, since the base model was not trained with annotations, this is the same as `--rlvf=transcript`.
+
 ### Base of representation
 The [paper](https://arxiv.org/abs/2405.15722) shows that the number of unique primes in the base of representation
 determines Verifiability of the model. This ablation requires generating many different datasets (one for each base).
