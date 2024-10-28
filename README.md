@@ -34,7 +34,7 @@ pip install -e .
 You can download pre-generated [![Data](https://img.shields.io/badge/Data-blue.svg)](https://zenodo.org/records/12751514), and extract it to the `data/` directory.
 To generate this data yourself, run
 ```bash
-python self-proving-models/data/generate_data.py
+python spm/data/generate_data.py
 ```
 
 This populates the `data/` directory with Transcripts and Annotated Transcripts
@@ -49,13 +49,13 @@ For Annotated Transcripts, `TL` is replaced with `ATL{ANNOTATION_LENGTH}`.
 ## Training
 Once `data/` is populated, you can train a Self-Proving GPT via Transcript Learning:
 ```bash
-python self-proving-models/train.py --data DATASET_NAME
+python spm/train.py --data DATASET_NAME
 ```
 where `DATASET_NAME` is the name of the dataset you want to use.
 ### Example
 To train on about 10 million samples with an upper bound of 10,000 encoded in base 210:
 ```bash
-python self-proving-models/train.py --data TL_1e4_m1e7_b210
+python spm/train.py --data TL_1e4_m1e7_b210
 ```
 ### Useful arguments
 - `--help`: Show all arguments.
@@ -91,7 +91,7 @@ Notice that in the [above ablation](#Annotation length), T=0 corresponds to GPT+
 
 To obtain the third row, first train a mode with TL for 10k iterations:
  ```bash
- train.py --device=cuda --dropout=0 --eval_batch_size=512 --warmup_iters=0 --epochs=1 --beta1=0.733 --learning_rate=0.0007 --batch_size=1024 --decay_lr=10 --grad_clip=2 --n_embd=256 --n_head=8 --n_layer=8 --seed=0 --data=TL_1e4_m1e7_b210 --eval_interval=10000 --log_interval=500 --save_iters 10000
+python spm/train.py --device=cuda --dropout=0 --eval_batch_size=512 --warmup_iters=0 --epochs=1 --beta1=0.733 --learning_rate=0.0007 --batch_size=1024 --decay_lr=10 --grad_clip=2 --n_embd=256 --n_head=8 --n_layer=8 --seed=0 --data=TL_1e4_m1e7_b210 --eval_interval=10000 --log_interval=500 --save_iters 10000
  ```
 
 You now have a low-verifiability base model. Tune it with RLVF with the following hyperparameters:
@@ -107,7 +107,7 @@ determines Verifiability of the model. This ablation requires generating many di
 For convenience, there is a script that first samples a random base with a given number of unique primes in its
 factorization, then trains a model and deletes the dataset.
 ```bash
-./self-proving-models/train_diff_bases.py --num_unique_primes NUM_UNIQUE_PRIMES --seed SEED
+./spm/train_diff_bases.py --num_unique_primes NUM_UNIQUE_PRIMES --seed SEED
 ```
 
 Run this script for twenty seeds. *Tip: You can use a [WandB sweep](https://docs.wandb.ai/guides/sweeps)
@@ -145,9 +145,9 @@ If you use Self-Proving Models or components of this codebase in your research, 
 
 ## Acknowledgements
 This codebase adapts Andrej Karpathy's [nanoGPT](https://www.github.com/karpathy/nanoGPT) as its GPT implementation.
-The model can be found in `self-proving-models/gpt/`. Cassidy Laidlaw's
+The model can be found in `spm/gpt/`. Cassidy Laidlaw's
 [boilerplate](https://github.com/cassidylaidlaw/python-boilerplate)
-was used for repo structure and linting (`self-proving-models/lint.sh`).
+was used for repo structure and linting (`spm/lint.sh`).
 
 ## Contribution
 Contributions are welcome! Please open an [issue](https://www.github.com/orrp/self-proving-models/issues)
