@@ -6,7 +6,7 @@ import wandb
 from sympy import primefactors
 
 from spm import ANALYSIS_DIR, WANDB_DIR, logging
-from spm.data.samplers import (
+from spm.data.gcd_samplers import (
     DisjointRejector,
     LogUniformGCDSampler,
     Sampler,

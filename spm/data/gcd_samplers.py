@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 
 from spm import logging
-from spm.data.samples import DTYPE, AnnotatedTranscript, Samples, Transcript, fcast
+from spm.data.gcd_samples import DTYPE, AnnotatedTranscript, Samples, Transcript, fcast
 from spm.utils import egcd
 
 

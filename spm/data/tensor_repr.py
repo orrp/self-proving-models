@@ -9,7 +9,7 @@ import numpy as np
 from torch import Tensor
 
 from spm import DATA_DIR, logging
-from spm.data.samples import Labels
+from spm.data.gcd_samples import Labels
 from spm.data.str_repr import EncodedSamples, StrRepr
 from spm.utils import arr_split, log_save, np_to_torch
 

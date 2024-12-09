@@ -4,7 +4,7 @@ from pathlib import Path
 import torch
 from pandas import DataFrame
 
-from spm.data.samplers import CSVSampler, TranscriptSampler, AnnotatedTranscriptSampler
+from spm.data.gcd_samplers import AnnotatedTranscriptSampler, CSVSampler, TranscriptSampler
 from spm.data.str_repr import EncodedSamples
 from spm.data.tensor_repr import TensorRepr
 from spm.gpt.config import TrainerConfig
@@ -13,9 +13,9 @@ from spm.gpt.trainer import Trainer
 
 
 @torch.no_grad()
-def evaluate(model, tr: TensorRepr, device, batch_size) -> tuple[
-    dict[tuple[int, int], list[int]], dict[tuple[int, int], list[int]]
-]:
+def evaluate(
+    model, tr: TensorRepr, device, batch_size
+) -> tuple[dict[tuple[int, int], list[int]], dict[tuple[int, int], list[int]]]:
     """
     Evaluate the model, storing prediction per-input (slower than normal evaluation).
     Args:
@@ -34,7 +34,7 @@ def evaluate(model, tr: TensorRepr, device, batch_size) -> tuple[
         # confusingly, it's the right component even if our model doesn't have annotations or even proofs...)'
         assert TargetComponent.ANNOTATED_TRANSCRIPT in masks
         output = model.generate(inp, max_new_tokens=tr.m.generation_size)
-        output = output[:, inp.shape[1]:]  # trim input
+        output = output[:, inp.shape[1] :]  # trim input
         target = masked[TargetComponent.ANNOTATED_TRANSCRIPT]
         target_hat = output * masks[TargetComponent.ANNOTATED_TRANSCRIPT]
         for inp_, target_, target_hat_ in zip(inp, target, target_hat):
@@ -59,6 +59,7 @@ def make_eval_data(csv_path: Path, base: int, self_proving: bool, annot_len: int
     tr.save_val(val_cols)
     return tr
 
+
 def main(args):
     config = {
         "load_ckpt": args.ckpt,
@@ -76,9 +77,9 @@ def main(args):
     model.eval()
     model.to(args.device)
     input_to_prediction, input_to_target = evaluate(model, tr, args.device, args.batch_size)
-    for i, inp, target, prediction in enumerate(zip(
-            input_to_target.keys(), input_to_target.values(), input_to_prediction.values()
-    )):
+    for i, inp, target, prediction in enumerate(
+        zip(input_to_target.keys(), input_to_target.values(), input_to_prediction.values())
+    ):
         df.loc[i]["input"] = inp
         for c, x, x_star in zip(tr.m.target_labels, prediction, target):
             df.loc[i][c] = x
@@ -93,11 +94,16 @@ if __name__ == "__main__":
     parser.add_argument("--csv", type=str, help="Path to CSV file with inputs to the GCD problem")
     parser.add_argument("--base", type=int, help="Base of representation", default=10)
     parser.add_argument("--batch_size", type=int, help="Batch size for evaluation", default=32)
-    parser.add_argument("--self-proving", action="store_true",
-                        help="Generate proofs of correctness (works only if model was trained to be Self-Proving)")
-    parser.add_argument("--annot_len", type=int,
-                        help="Length of the annotation for proofs (should match the length of annotations "
-                             "used during training).")
+    parser.add_argument(
+        "--self-proving",
+        action="store_true",
+        help="Generate proofs of correctness (works only if model was trained to be Self-Proving)",
+    )
+    parser.add_argument(
+        "--annot_len",
+        type=int,
+        help="Length of the annotation for proofs (should match the length of annotations " "used during training).",
+    )
 
     args = parser.parse_args()
     main(args)

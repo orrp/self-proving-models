@@ -3,7 +3,7 @@ import abc
 import numpy as np
 import torch
 
-from spm.data.samples import Labels
+from spm.data.gcd_samples import Labels
 from spm.data.str_repr import StrRepr
 from spm.data.tensor_repr import TensorRepr
 from spm.utils import egcd

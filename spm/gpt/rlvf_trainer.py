@@ -1,7 +1,7 @@
 import torch
 
 from spm.data.generate_data import AnnotatedTranscriptSampler, UpperBoundRejector
-from spm.data.samplers import LogUniformGCDSampler, TranscriptSampler
+from spm.data.gcd_samplers import LogUniformGCDSampler, TranscriptSampler
 from spm.data.str_repr import EncodedSamples
 from spm.data.tensor_repr import NO_LOSS, TargetComponent, TensorRepr, block_size
 from spm.gpt.trainer import Trainer, logging, time, wandb

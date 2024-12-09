@@ -5,7 +5,7 @@ import pandas as pd
 from bidict import bidict
 from emoji.unicode_codes import EMOJI_DATA
 
-from spm.data.samples import Labels, Samples
+from spm.data.gcd_samples import Labels, Samples
 
 
 class StrRepr:

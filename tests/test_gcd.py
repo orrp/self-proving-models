@@ -6,9 +6,9 @@ import torch.random
 import wandb
 
 from spm.utils import is_egcd, egcd
-from spm.data.samplers import SAMPLERS, TranscriptSampler, AnnotatedTranscriptSampler, \
+from spm.data.gcd_samplers import SAMPLERS, TranscriptSampler, AnnotatedTranscriptSampler, \
     ExhaustiveGCDSampler, UniformGCDSampler
-from spm.data.samples import Transcript
+from spm.data.gcd_samples import Transcript
 from spm.data.str_repr import StrRepr, EncodedSamples
 from spm.data.tensor_repr import TensorRepr, DTYPE
 from spm.data.tensor_repr import  TargetComponent as TC

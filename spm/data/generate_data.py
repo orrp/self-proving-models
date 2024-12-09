@@ -4,14 +4,14 @@ from argparse import ArgumentParser
 
 import numpy as np
 
-from spm.data.samplers import (
+from spm.data.gcd_samplers import (
     AnnotatedTranscriptSampler,
     DisjointRejector,
     LogUniformGCDSampler,
     TranscriptSampler,
     UpperBoundRejector,
 )
-from spm.data.samples import AnnotatedTranscript
+from spm.data.gcd_samples import AnnotatedTranscript
 from spm.data.str_repr import EncodedSamples
 from spm.data.tensor_repr import TargetComponent, TensorRepr
 

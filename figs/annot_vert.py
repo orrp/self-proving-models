@@ -5,7 +5,7 @@ import matplotlib.ticker as mticker
 import numpy as np
 
 from spm import ANALYSIS_DIR
-from spm.data.samplers import euclidean_depths
+from spm.data.gcd_samplers import euclidean_depths
 
 def load_data():
     exp_to_verifiability = defaultdict(list)
